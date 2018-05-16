@@ -10,12 +10,12 @@ func (c *Client) Auth(password string) error {
 
 // DBSize
 // Return the approximate size of the database, in bytes. If compression is enabled, the size will be of the compressed data.
-func (c *Client) DBSize() (re int64, err error) {
+func (c *Client) DBSize() (int64, error) {
 	return c.doInt("dbsize")
 }
 
 // Info
 // Return information about the server.
-func (c *Client) Info() (re Values, err error) {
-	return c.doValues("info")
+func (c *Client) Info() ([]string, error) {
+	return c.doStrings("info")
 }
