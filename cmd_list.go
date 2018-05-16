@@ -1,4 +1,4 @@
-package gossdb
+package ssdb
 
 // QPushFront name item1 item2 ...
 // Add one or more than one element to the head of the queue.

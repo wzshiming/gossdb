@@ -1,4 +1,4 @@
-package gossdb
+package ssdb
 
 // HSet name key value
 // Set the string value in argument as value of the key of a hashmap.

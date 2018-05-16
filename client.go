@@ -1,4 +1,4 @@
-package gossdb
+package ssdb
 
 import (
 	"bytes"

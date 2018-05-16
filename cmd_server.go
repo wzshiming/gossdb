@@ -1,4 +1,4 @@
-package gossdb
+package ssdb
 
 // auth password
 // Available since: 1.7.0.0

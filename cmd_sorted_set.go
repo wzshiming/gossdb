@@ -1,4 +1,4 @@
-package gossdb
+package ssdb
 
 // ZSet name key score
 // Set the score of the key of a zset.
