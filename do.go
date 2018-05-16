@@ -12,6 +12,17 @@ func (c *Client) Do(args ...interface{}) (Values, error) {
 	return resp, err
 }
 
+func (c *Client) doMapStringInt(args ...interface{}) (map[string]int64, error) {
+	v, err := c.Do(args...)
+	if err != nil {
+		return nil, makeError(err, v, args)
+	}
+	if !(len(v) > 0 && v[0].Equal(ok)) {
+		return nil, makeError(nil, v, args)
+	}
+	return v[1:].MapStringInt(), nil
+}
+
 func (c *Client) doMapStringValue(args ...interface{}) (map[string]Value, error) {
 	v, err := c.Do(args...)
 	if err != nil {

@@ -1,7 +1,7 @@
 package ssdb
 
 import (
-	"bytes"
+	"bufio"
 	"fmt"
 	"net"
 	"strconv"
@@ -15,13 +15,13 @@ var one = Value("1")
 // Client Single connected client
 type Client struct {
 	sock net.Conn
-	buf  bytes.Buffer
+	rw   *bufio.ReadWriter
 }
 
 // ConnectByConn Single connected client by net.Conn
 func ConnectByConn(conn net.Conn) (*Client, error) {
 	return &Client{
-		sock: conn,
+		rw: bufio.NewReadWriter(bufio.NewReader(conn), bufio.NewWriter(conn)),
 	}, nil
 }
 
@@ -34,24 +34,12 @@ func ConnectByAddr(addr string) (*Client, error) {
 	return ConnectByConn(sock)
 }
 
-func (c *Client) doMapStringInt(args ...interface{}) (map[string]int64, error) {
-	v, err := c.Do(args...)
-	if err != nil {
-		return nil, makeError(err, v, args)
-	}
-	if !(len(v) > 0 && v[0].Equal(ok)) {
-		return nil, makeError(nil, v, args)
-	}
-	return v[1:].MapStringInt(), nil
-}
-
 // Send msg
 func (c *Client) Send(args ...interface{}) error {
 	return c.send(args)
 }
 
 func (c *Client) send(args []interface{}) error {
-	var buf bytes.Buffer
 	for _, arg := range args {
 		var s string
 		switch arg := arg.(type) {
@@ -63,14 +51,6 @@ func (c *Client) send(args []interface{}) error {
 			s = arg
 		case []byte:
 			s = string(arg)
-		case []string:
-			for _, s := range arg {
-				buf.WriteString(fmt.Sprintf("%d", len(s)))
-				buf.WriteByte('\n')
-				buf.WriteString(s)
-				buf.WriteByte('\n')
-			}
-			continue
 		case int:
 			s = strconv.FormatInt(int64(arg), 10)
 		case int8:
@@ -106,70 +86,50 @@ func (c *Client) send(args []interface{}) error {
 		default:
 			return fmt.Errorf("bad arguments")
 		}
-		buf.WriteString(fmt.Sprintf("%d", len(s)))
-		buf.WriteByte('\n')
-		buf.WriteString(s)
-		buf.WriteByte('\n')
+
+		c.rw.WriteString(fmt.Sprintf("%d\n", len(s)))
+		c.rw.WriteString(s)
+		c.rw.WriteByte('\n')
 	}
-	buf.WriteByte('\n')
-	_, err := c.sock.Write(buf.Bytes())
-	return err
+	c.rw.WriteByte('\n')
+	return c.rw.Flush()
 }
 
 // Recv msg
 func (c *Client) Recv() (Values, error) {
-	var tmp [8192]byte
+	return c.recv()
+}
+
+func (c *Client) recv() (Values, error) {
+	resp := Values{}
 	for {
-		resp := c.parse()
-		if resp != nil {
-			return resp, nil
-		}
-		n, err := c.sock.Read(tmp[0:])
+		tmp, err := c.rw.ReadSlice('\n')
 		if err != nil {
 			return nil, err
 		}
-		c.buf.Write(tmp[0:n])
-	}
-}
 
-func (c *Client) parse() Values {
-	resp := Values{}
-	buf := c.buf.Bytes()
-	var idx, offset int
-	idx = 0
-	offset = 0
-
-	for {
-		idx = bytes.IndexByte(buf[offset:], '\n')
-		if idx == -1 {
-			break
+		if len(tmp) == 0 {
+			continue
 		}
-		p := buf[offset : offset+idx]
-		offset += idx + 1
 
-		if len(p) == 0 || (len(p) == 1 && p[0] == '\r') {
+		if tmp[0] == '\n' || tmp[0] == '\r' {
 			if len(resp) == 0 {
 				continue
 			}
-			c.buf.Reset()
-			c.buf.Write(buf[offset:])
-			return resp
+			return resp, nil
 		}
-
-		size, err := strconv.Atoi(string(p))
+		size, err := strconv.Atoi(string(tmp[:len(tmp)-1]))
 		if err != nil || size < 0 {
-			break
+			return nil, err
 		}
-		if offset+size >= c.buf.Len() {
-			break
+		buf := make([]byte, size)
+		_, err = c.rw.Read(buf)
+		if err != nil {
+			return nil, err
 		}
-
-		v := buf[offset : offset+size]
-		resp = append(resp, Value(v))
-		offset += size + 1
+		resp = append(resp, Value(buf))
+		c.rw.ReadByte()
 	}
-
-	return nil
 }
 
 // Close Connection
