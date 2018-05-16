@@ -18,8 +18,12 @@ type Client struct {
 	rw   *bufio.ReadWriter
 }
 
-// ConnectByConn Single connected client by net.Conn
-func ConnectByConn(conn net.Conn) (*Client, error) {
+// Connect Single connected client by net.Conn
+func Connect(f func() (net.Conn, error)) (*Client, error) {
+	conn, err := f()
+	if err != nil {
+		return nil, err
+	}
 	return &Client{
 		rw: bufio.NewReadWriter(bufio.NewReader(conn), bufio.NewWriter(conn)),
 	}, nil
@@ -27,11 +31,9 @@ func ConnectByConn(conn net.Conn) (*Client, error) {
 
 // ConnectByAddr Single connected client by addr
 func ConnectByAddr(addr string) (*Client, error) {
-	sock, err := net.Dial("tcp", addr)
-	if err != nil {
-		return nil, err
-	}
-	return ConnectByConn(sock)
+	return Connect(func() (net.Conn, error) {
+		return net.Dial("tcp", addr)
+	})
 }
 
 // Send msg
