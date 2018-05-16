@@ -12,27 +12,26 @@ var ok = Value("ok")
 var notFound = Value("not_found")
 var one = Value("1")
 
+// Client Single connected client
 type Client struct {
 	sock net.Conn
 	buf  bytes.Buffer
 }
 
+// ConnectByConn Single connected client by net.Conn
 func ConnectByConn(conn net.Conn) (*Client, error) {
 	return &Client{
 		sock: conn,
 	}, nil
 }
 
+// ConnectByAddr Single connected client by addr
 func ConnectByAddr(addr string) (*Client, error) {
 	sock, err := net.Dial("tcp", addr)
 	if err != nil {
 		return nil, err
 	}
 	return ConnectByConn(sock)
-}
-
-func Connect(ip string, port int) (*Client, error) {
-	return ConnectByAddr(fmt.Sprintf("%s:%d", ip, port))
 }
 
 func (c *Client) doMapStringInt(args ...interface{}) (map[string]int64, error) {
@@ -46,6 +45,7 @@ func (c *Client) doMapStringInt(args ...interface{}) (map[string]int64, error) {
 	return v[1:].MapStringInt(), nil
 }
 
+// Send msg
 func (c *Client) Send(args ...interface{}) error {
 	return c.send(args)
 }
@@ -116,6 +116,7 @@ func (c *Client) send(args []interface{}) error {
 	return err
 }
 
+// Recv msg
 func (c *Client) Recv() (Values, error) {
 	var tmp [8192]byte
 	for {
@@ -171,7 +172,7 @@ func (c *Client) parse() Values {
 	return nil
 }
 
-// Close The Client Connection
+// Close Connection
 func (c *Client) Close() error {
 	return c.sock.Close()
 }

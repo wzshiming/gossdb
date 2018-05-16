@@ -10,14 +10,14 @@ func (c *Client) Set(key string, value interface{}) error {
 	return c.doNil("set", key, value)
 }
 
-// Setx key value ttl
+// SetX key value ttl
 // Set the value of the key, with a time to live.
 // Unlike Redis, the ttl will not be remove when later set the same key!
 func (c *Client) SetX(key string, value interface{}, ttl time.Duration) error {
 	return c.doNil("setx", key, value, ttl)
 }
 
-// Setnx key value
+// SetNX key value
 // Set the string value in argument as value of the key if and only if the key doesn't exist.
 func (c *Client) SetNX(key string, value interface{}) (bool, error) {
 	return c.doBool("setnx", key, value)
@@ -41,7 +41,7 @@ func (c *Client) Get(key string) (Value, error) {
 	return c.doValue("get", key)
 }
 
-// Getset key value
+// GetSet key value
 // Sets a value and returns the previous entry at that key.
 func (c *Client) GetSet(key string, value interface{}) (Value, error) {
 	return c.doValue("getset", key, value)
@@ -66,13 +66,13 @@ func (c *Client) Exists(key string) (bool, error) {
 	return c.doBool("exists", key)
 }
 
-// Getbit key offset
+// GetBit key offset
 // Return a single bit out of a string.
 func (c *Client) GetBit(key string, offset int64) (bool, error) {
 	return c.doBool("getbit", key, offset)
 }
 
-// Setbit key offset value
+// SetBit key offset value
 // Changes a single bit of a string. The string is auto expanded.
 func (c *Client) SetBit(key string, offset int64, value bool) (bool, error) {
 	return c.doBool("setbit", key, offset, value)

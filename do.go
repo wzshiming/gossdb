@@ -2,6 +2,7 @@ package ssdb
 
 import "time"
 
+// Do send and recv
 func (c *Client) Do(args ...interface{}) (Values, error) {
 	err := c.send(args)
 	if err != nil {

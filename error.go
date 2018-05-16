@@ -4,12 +4,15 @@ import (
 	"fmt"
 )
 
+var errIsEmpty = fmt.Errorf("error: respone is empty")
+
 func makeError(err error, resp Values, args []interface{}) error {
 	if err != nil {
-		fmt.Errorf("%s: %v", err.Error(), args)
+		return fmt.Errorf("%s: %v", err.Error(), args)
 	}
+
 	if len(resp) < 1 {
-		return fmt.Errorf("error: respone is empty.")
+		return errIsEmpty
 	}
 
 	if resp[0].Equal(notFound) {

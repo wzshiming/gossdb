@@ -142,7 +142,7 @@ func (c *Client) ZPopBack(name string, limit int64) (map[string]int64, error) {
 	return c.doMapStringInt("zpop_back", name, limit)
 }
 
-// multi_zset name key1 score1 key2 score2 ...
+// MultiZSet name key1 score1 key2 score2 ...
 // Set multiple key-score pairs(kvs) of a zset in one method call.
 func (c *Client) MultiZSet(name string, kvs map[string]int64) error {
 
@@ -154,7 +154,7 @@ func (c *Client) MultiZSet(name string, kvs map[string]int64) error {
 	return c.doNil(args...)
 }
 
-// multi_zget name key1 key2 ...
+// MultiZGet name key1 key2 ...
 // Get the values related to the specified multiple keys of a zset.
 func (c *Client) MultiZGet(name string, key ...string) (map[string]int64, error) {
 	if len(key) == 0 {
@@ -169,7 +169,7 @@ func (c *Client) MultiZGet(name string, key ...string) (map[string]int64, error)
 	return c.doMapStringInt(args...)
 }
 
-// multi_zdel name key1 key2 ...
+// MultiZDel name key1 key2 ...
 // Delete specified multiple keys of a zset.
 func (c *Client) MultiZDel(name string, key ...string) error {
 	if len(key) == 0 {

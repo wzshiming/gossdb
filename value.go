@@ -6,8 +6,10 @@ import (
 	"time"
 )
 
+// Values Value Slice
 type Values []Value
 
+// Strings get []string
 func (v Values) Strings() []string {
 	s := make([]string, 0, len(v))
 	for _, v := range v {
@@ -16,6 +18,7 @@ func (v Values) Strings() []string {
 	return s
 }
 
+// MapStringInt get map[string]int64
 func (v Values) MapStringInt() map[string]int64 {
 	val := map[string]int64{}
 	size := len(v)
@@ -25,6 +28,7 @@ func (v Values) MapStringInt() map[string]int64 {
 	return val
 }
 
+// MapStringValue get map[string]Value
 func (v Values) MapStringValue() map[string]Value {
 	val := map[string]Value{}
 	size := len(v)
@@ -34,7 +38,7 @@ func (v Values) MapStringValue() map[string]Value {
 	return val
 }
 
-// Value
+// Value return val
 type Value []byte
 
 // String
@@ -42,45 +46,46 @@ func (v Value) String() string {
 	return string(v)
 }
 
-// Duration
+// Duration get time.Duration
 func (v Value) Duration() time.Duration {
 	return time.Duration(v.Int()) * time.Second
 }
 
-// Int
+// Int get int
 func (v Value) Int() int64 {
 	i, _ := strconv.ParseInt(string(v), 0, 0)
 	return i
 }
 
-// Uint
+// Uint get uint
 func (v Value) Uint() uint64 {
 	i, _ := strconv.ParseUint(string(v), 0, 0)
 	return i
 }
 
-// Float
+// Float get float
 func (v Value) Float() float64 {
 	i, _ := strconv.ParseFloat(string(v), 0)
 	return i
 }
 
-// Bool
+// Bool get bool
 func (v Value) Bool() bool {
 	i, _ := strconv.ParseBool(string(v))
 	return i
 }
 
-// Bytes
+// Bytes get bytes
 func (v Value) Bytes() []byte {
 	return []byte(v)
 }
 
-// IsEmpty
+// IsEmpty is empty
 func (v Value) IsEmpty() bool {
 	return len(v) == 0
 }
 
+// Equal value equal
 func (v Value) Equal(y Value) bool {
 	return bytes.Equal([]byte(v), []byte(y))
 }
