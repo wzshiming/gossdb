@@ -2,6 +2,7 @@ package ssdb
 
 import (
 	"net"
+	"sync"
 )
 
 var ok = Value("ok")
@@ -10,42 +11,32 @@ var one = Value("1")
 
 // Client Single connected client
 type Client struct {
-	conn *Conn
+	pool        sync.Pool
+	dialHandler func(addr string) (net.Conn, error)
+	auth        string
+	addr        string
 }
 
 // Connect Single connected client by net.Conn
-func Connect(f func() (net.Conn, error)) (*Client, error) {
-	conn, err := f()
-	if err != nil {
-		return nil, err
+func Connect(opts ...Option) (*Client, error) {
+	c := &Client{
+		dialHandler: func(addr string) (net.Conn, error) {
+			return net.Dial("tcp", addr)
+		},
+		addr: "127.0.0.1:8888",
 	}
-	return &Client{
-		conn: newConn(conn),
-	}, nil
-}
-
-// ConnectByAddr Single connected client by addr
-func ConnectByAddr(addr string) (*Client, error) {
-	return Connect(func() (net.Conn, error) {
-		return net.Dial("tcp", addr)
-	})
-}
-
-// Send msg
-func (c *Client) send(args []interface{}) error {
-	v, err := NewValues(args)
-	if err != nil {
-		return err
+	c.pool = sync.Pool{
+		New: func() interface{} {
+			conn, err := c.dialHandler(c.addr)
+			if err != nil {
+				return err
+			}
+			return newConn(conn)
+		},
 	}
-	return c.conn.Send(v)
-}
+	for _, v := range opts {
+		v(c)
+	}
 
-// Recv msg
-func (c *Client) recv() (Values, error) {
-	return c.conn.Recv()
-}
-
-// Close Connection
-func (c *Client) Close() error {
-	return c.conn.Close()
+	return c, nil
 }

@@ -1,15 +1,51 @@
 package ssdb
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
+
+// GetConn get conn
+func (c *Client) GetConn() (*Conn, error) {
+	conni := c.pool.Get()
+	var conn *Conn
+	switch t := conni.(type) {
+	case *Conn:
+		conn = t
+	case error:
+		return nil, t
+	default:
+		return nil, fmt.Errorf("Error version")
+	}
+	return conn, nil
+}
+
+func (c *Client) PutConn(conn *Conn) {
+	c.pool.Put(conn)
+}
 
 // Do send and recv
-func (c *Client) Do(args ...interface{}) (Values, error) {
-	err := c.send(args)
+func (c *Client) Do(args ...interface{}) (v Values, err0 error) {
+	conn, err := c.GetConn()
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.recv()
-	return resp, err
+	defer func() {
+		if err0 != nil {
+			c.pool.Put(conn)
+		} else {
+			conn.Close()
+		}
+	}()
+	v, err = NewValues(args)
+	if err != nil {
+		return nil, err
+	}
+	err = conn.Send(v)
+	if err != nil {
+		return nil, err
+	}
+	return conn.Recv()
 }
 
 func (c *Client) doMapStringInt(args ...interface{}) (map[string]int64, error) {
