@@ -43,16 +43,28 @@ func (c *Client) ZList(nameStart, nameEnd string, limit int64) ([]string, error)
 	return c.doStrings("zlist", nameStart, nameEnd, limit)
 }
 
+func (c *Client) ZListRangAll(nameStart, nameEnd string, limit int64, cb func(string) error) error {
+	return c.doCDString(cb, 1, limit, "zlist", nameStart, nameEnd, limit)
+}
+
 // ZRList nameStart nameEnd limit
 // List zset names in range (nameStart, nameEnd], in reverse order.
 func (c *Client) ZRList(nameStart, nameEnd string, limit int64) ([]string, error) {
 	return c.doStrings("zrlist", nameStart, nameEnd, limit)
 }
 
+func (c *Client) ZRListRangAll(nameStart, nameEnd string, limit int64, cb func(string) error) error {
+	return c.doCDString(cb, 1, limit, "zrlist", nameStart, nameEnd, limit)
+}
+
 // ZKeys name keyStart scoreStart scoreEnd limit
 // List keys in a zset.
 func (c *Client) ZKeys(name string, keyStart string, scoreStart, scoreEnd int64, limit int64) ([]string, error) {
 	return c.doStrings("zkeys", name, keyStart, scoreStart, scoreEnd, limit)
+}
+
+func (c *Client) ZKeysRangAll(name string, keyStart string, scoreStart, scoreEnd int64, limit int64, cb func(string) error) error {
+	return c.doCDString(cb, 2, limit, "zkeys", name, keyStart, scoreStart, scoreEnd, limit)
 }
 
 // ZScan name keyStart scoreStart scoreEnd limit

@@ -96,8 +96,16 @@ func (c *Client) QList(nameStart, nameEnd string, limit int64) ([]string, error)
 	return c.doStrings("qlist", nameStart, nameEnd, limit)
 }
 
+func (c *Client) QListRangeAll(nameStart, nameEnd string, limit int64, cb func(string) error) error {
+	return c.doCDString(cb, 1, limit, "qlist", nameStart, nameEnd, limit)
+}
+
 // QRList nameStart nameEnd limit
 // Like qlist, but in reverse order.
 func (c *Client) QRList(nameStart, nameEnd string, limit int64) ([]string, error) {
 	return c.doStrings("qrlist", nameStart, nameEnd, limit)
+}
+
+func (c *Client) QRListRangeAll(nameStart, nameEnd string, limit int64, cb func(string) error) error {
+	return c.doCDString(cb, 1, limit, "qrlist", nameStart, nameEnd, limit)
 }

@@ -45,10 +45,18 @@ func (c *Client) HList(nameStart, nameEnd string, limit int64) ([]string, error)
 	return c.doStrings("hlist", nameStart, nameEnd, limit)
 }
 
+func (c *Client) HListRangeAll(nameStart, nameEnd string, limit int64, cb func(string) error) error {
+	return c.doCDString(cb, 1, limit, "hlist", nameStart, nameEnd, limit)
+}
+
 // HRList nameStart nameEnd limit
 // Like hlist, but in reverse order.
 func (c *Client) HRList(nameStart, nameEnd string, limit int64) ([]string, error) {
 	return c.doStrings("hrlist", nameStart, nameEnd, limit)
+}
+
+func (c *Client) HRListRangeAll(nameStart, nameEnd string, limit int64, cb func(string) error) error {
+	return c.doCDString(cb, 1, limit, "hrlist", nameStart, nameEnd, limit)
 }
 
 // HKeys name keyStart keyEnd limit
@@ -56,6 +64,10 @@ func (c *Client) HRList(nameStart, nameEnd string, limit int64) ([]string, error
 // ("", ""] means no range limit.
 func (c *Client) HKeys(name, keyStart, keyEnd string, limit int64) ([]string, error) {
 	return c.doStrings("hkeys", name, keyStart, keyEnd, limit)
+}
+
+func (c *Client) HKeysRangeAll(name, keyStart, keyEnd string, limit int64, cb func(string) error) error {
+	return c.doCDString(cb, 2, limit, "hkeys", name, keyStart, keyEnd, limit)
 }
 
 // HGetAll name
@@ -72,10 +84,18 @@ func (c *Client) HScan(name string, keyStart, keyEnd string, limit int64) (map[s
 	return c.doMapStringValue("hscan", name, keyStart, keyEnd, limit)
 }
 
+func (c *Client) HScanRangeAll(name string, keyStart, keyEnd string, limit int64, cb func(string, Value) error) error {
+	return c.doCDStringValue(cb, 2, limit, "hscan", name, keyStart, keyEnd, limit)
+}
+
 // HRScan name keyStart keyEnd limit
 // Like hscan, but in reverse order.
 func (c *Client) HRScan(name string, keyStart, keyEnd string, limit int64) (map[string]Value, error) {
 	return c.doMapStringValue("hrscan", name, keyStart, keyEnd, limit)
+}
+
+func (c *Client) HRScanRangeAll(name string, keyStart, keyEnd string, limit int64, cb func(string, Value) error) error {
+	return c.doCDStringValue(cb, 2, limit, "hrscan", name, keyStart, keyEnd, limit)
 }
 
 // HClear name

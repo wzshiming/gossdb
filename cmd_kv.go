@@ -108,11 +108,19 @@ func (c *Client) Keys(keyStart, keyEnd string, limit int64) ([]string, error) {
 	return c.doStrings("keys", keyStart, keyEnd, limit)
 }
 
+func (c *Client) KeysRangeAll(keyStart, keyEnd string, limit int64, cb func(string) error) error {
+	return c.doCDString(cb, 1, limit, "keys", keyStart, keyEnd, limit)
+}
+
 // RKeys keyStart keyEnd limit
 // Since 1.9.0
 // Like keys, but in reverse order.
 func (c *Client) RKeys(keyStart, keyEnd string, limit int64) ([]string, error) {
 	return c.doStrings("rkeys", keyStart, keyEnd, limit)
+}
+
+func (c *Client) RKeysRangeAll(keyStart, keyEnd string, limit int64, cb func(string) error) error {
+	return c.doCDString(cb, 1, limit, "rkeys", keyStart, keyEnd, limit)
 }
 
 // Scan keyStart keyEnd limit
@@ -123,10 +131,18 @@ func (c *Client) Scan(keyStart, keyEnd string, limit int64) (map[string]Value, e
 	return c.doMapStringValue("scan", keyStart, keyEnd, limit)
 }
 
+func (c *Client) ScanRangeAll(keyStart, keyEnd string, limit int64, cb func(string, Value) error) error {
+	return c.doCDStringValue(cb, 1, limit, "scan", keyStart, keyEnd, limit)
+}
+
 // RScan
 // Like scan, but in reverse order.
 func (c *Client) RScan(keyStart, keyEnd string, limit int64) (map[string]Value, error) {
 	return c.doMapStringValue("rscan", keyStart, keyEnd, limit)
+}
+
+func (c *Client) RScanRangeAll(keyStart, keyEnd string, limit int64, cb func(string, Value) error) error {
+	return c.doCDStringValue(cb, 1, limit, "rscan", keyStart, keyEnd, limit)
 }
 
 // MultiSet key1 value1 key2 value2 ...
