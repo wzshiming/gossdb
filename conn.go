@@ -23,8 +23,7 @@ func newConn(conn net.Conn) *Conn {
 
 func (c *Conn) Send(args Values) error {
 	for _, arg := range args {
-		l := strconv.FormatInt(int64(len(arg)), 10)
-		c.w.WriteString(l)
+		c.w.Write(strconv.AppendInt(nil, int64(len(arg)), 10))
 		c.w.WriteByte('\n')
 		c.w.Write(arg)
 		c.w.WriteByte('\n')
@@ -59,7 +58,7 @@ loop:
 			return resp, nil
 		}
 
-		size, err := strconv.Atoi(string(tmp[:len(tmp)-1]))
+		size, err := strconv.ParseInt(string(tmp[:len(tmp)-1]), 0, 0)
 		if err != nil || size < 0 {
 			return nil, err
 		}
