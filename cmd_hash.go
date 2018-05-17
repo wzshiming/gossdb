@@ -41,21 +41,21 @@ func (c *Client) HSize(name string) (int64, error) {
 // List hashmap names in range (nameStart, nameEnd].
 // ("", ""] means no range limit.
 // Refer to scan command for more information about how it work.
-func (c *Client) HList(nameStart, nameEnd string, limit int64) (Values, error) {
-	return c.doValues("hlist", nameStart, nameEnd, limit)
+func (c *Client) HList(nameStart, nameEnd string, limit int64) ([]string, error) {
+	return c.doStrings("hlist", nameStart, nameEnd, limit)
 }
 
 // HRList nameStart nameEnd limit
 // Like hlist, but in reverse order.
-func (c *Client) HRList(nameStart, nameEnd string, limit int64) (Values, error) {
-	return c.doValues("hrlist", nameStart, nameEnd, limit)
+func (c *Client) HRList(nameStart, nameEnd string, limit int64) ([]string, error) {
+	return c.doStrings("hrlist", nameStart, nameEnd, limit)
 }
 
 // HKeys name keyStart keyEnd limit
 // List keys of a hashmap in range (keyStart, keyEnd].
 // ("", ""] means no range limit.
-func (c *Client) HKeys(name, keyStart, keyEnd string, limit int64) (Values, error) {
-	return c.doValues("hkeys", name, keyStart, keyEnd, limit)
+func (c *Client) HKeys(name, keyStart, keyEnd string, limit int64) ([]string, error) {
+	return c.doStrings("hkeys", name, keyStart, keyEnd, limit)
 }
 
 // HGetAll name
