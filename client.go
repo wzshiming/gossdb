@@ -27,11 +27,21 @@ func Connect(opts ...Option) (*Client, error) {
 	}
 	c.pool = sync.Pool{
 		New: func() interface{} {
-			conn, err := c.dialHandler(c.addr)
+			netConn, err := c.dialHandler(c.addr)
 			if err != nil {
 				return err
 			}
-			return newConn(conn)
+			conn := newConn(netConn)
+
+			err = conn.Send(Values{Value("auth"), Value(c.auth)})
+			if err != nil {
+				return err
+			}
+			_, err = conn.Recv()
+			if err != nil {
+				return err
+			}
+			return conn
 		},
 	}
 	for _, v := range opts {
