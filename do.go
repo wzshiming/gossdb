@@ -119,7 +119,7 @@ func (c *Client) doStrings(args ...interface{}) ([]string, error) {
 	if err != nil {
 		return nil, makeError(err, v, args)
 	}
-	if !(len(v) > 1 && v[0].Equal(ok)) {
+	if !(len(v) > 0 && v[0].Equal(ok)) {
 		return nil, makeError(nil, v, args)
 	}
 	return v[1:].Strings(), nil
@@ -141,7 +141,7 @@ func (c *Client) doValues(args ...interface{}) (Values, error) {
 	if err != nil {
 		return nil, makeError(err, v, args)
 	}
-	if !(len(v) > 1 && v[0].Equal(ok)) {
+	if !(len(v) > 0 && v[0].Equal(ok)) {
 		return nil, makeError(nil, v, args)
 	}
 	return v[1:], nil
@@ -154,6 +154,48 @@ func (c *Client) doNil(args ...interface{}) error {
 	}
 	if !(len(v) > 0 && v[0].Equal(ok)) {
 		return makeError(nil, v, args)
+	}
+	return nil
+}
+
+func (c *Client) doCDStringValue(cb func(string, Value) error, startPos int, limit int64, args ...interface{}) error {
+	vs, err := c.doValues(args...)
+	if err != nil {
+		return err
+	}
+
+	var k string
+	for i, end := 0, len(vs)-1; i < end; i += 2 {
+		k = vs[i].String()
+		v := vs[i+1]
+		err = cb(k, v)
+		if err != nil {
+			return err
+		}
+	}
+	if int64(len(vs)/2) == limit {
+		args[startPos] = k
+		return c.doCDStringValue(cb, startPos, limit, args...)
+	}
+	return nil
+}
+
+func (c *Client) doCDString(cb func(string) error, startPos int, limit int64, args ...interface{}) error {
+	vs, err := c.doStrings(args...)
+	if err != nil {
+		return err
+	}
+
+	for _, v := range vs {
+		err = cb(v)
+		if err != nil {
+			return err
+		}
+	}
+
+	if int64(len(vs)) == limit {
+		args[startPos] = vs[len(vs)-1]
+		return c.doCDString(cb, startPos, limit, args...)
 	}
 	return nil
 }
