@@ -2,6 +2,7 @@ package ssdb
 
 import (
 	"bufio"
+	"io"
 	"net"
 	"strconv"
 )
@@ -45,10 +46,12 @@ loop:
 		case 0:
 			continue loop
 		case 2:
-			if tmp[0] != '\r' {
-				break
+			if tmp[0] == '\r' {
+				if len(resp) == 0 {
+					continue loop
+				}
+				return resp, nil
 			}
-			fallthrough
 		case 1:
 			if len(resp) == 0 {
 				continue loop
@@ -61,7 +64,7 @@ loop:
 			return nil, err
 		}
 		buf := make([]byte, size)
-		_, err = c.r.Read(buf)
+		_, err = io.ReadFull(c.r, buf)
 		if err != nil {
 			return nil, err
 		}
