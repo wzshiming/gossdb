@@ -2,12 +2,25 @@ package ssdb
 
 import (
 	"bytes"
+	"fmt"
 	"strconv"
 	"time"
 )
 
 // Values Value Slice
 type Values []Value
+
+func NewValues(arg []interface{}) (Values, error) {
+	vs := make(Values, 0, len(arg))
+	for _, v := range arg {
+		d, err := NewValue(v)
+		if err != nil {
+			return nil, err
+		}
+		vs = append(vs, d)
+	}
+	return vs, nil
+}
 
 // Strings get []string
 func (v Values) Strings() []string {
@@ -40,6 +53,53 @@ func (v Values) MapStringValue() map[string]Value {
 
 // Value return val
 type Value []byte
+
+func NewValue(arg interface{}) (Value, error) {
+	switch arg := arg.(type) {
+	case time.Duration:
+		return Value(strconv.FormatUint(uint64(arg/time.Second), 10)), nil
+	case fmt.Stringer:
+		return Value(arg.String()), nil
+	case string:
+		return Value(arg), nil
+	case []byte:
+		return Value(arg), nil
+	case int:
+		return Value(strconv.FormatInt(int64(arg), 10)), nil
+	case int8:
+		return Value(strconv.FormatInt(int64(arg), 10)), nil
+	case int16:
+		return Value(strconv.FormatInt(int64(arg), 10)), nil
+	case int32:
+		return Value(strconv.FormatInt(int64(arg), 10)), nil
+	case int64:
+		return Value(strconv.FormatInt(int64(arg), 10)), nil
+	case uint:
+		return Value(strconv.FormatUint(uint64(arg), 10)), nil
+	case uint8:
+		return Value(strconv.FormatUint(uint64(arg), 10)), nil
+	case uint16:
+		return Value(strconv.FormatUint(uint64(arg), 10)), nil
+	case uint32:
+		return Value(strconv.FormatUint(uint64(arg), 10)), nil
+	case uint64:
+		return Value(strconv.FormatUint(uint64(arg), 10)), nil
+	case float32:
+		return Value(strconv.FormatFloat(float64(arg), 'f', -1, 64)), nil
+	case float64:
+		return Value(strconv.FormatFloat(float64(arg), 'f', -1, 64)), nil
+	case bool:
+		if arg {
+			return Value("1"), nil
+		} else {
+			return Value("0"), nil
+		}
+	case nil:
+		return Value(""), nil
+	default:
+		return nil, fmt.Errorf("error type")
+	}
+}
 
 // String
 func (v Value) String() string {

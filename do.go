@@ -8,7 +8,7 @@ func (c *Client) Do(args ...interface{}) (Values, error) {
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.Recv()
+	resp, err := c.recv()
 	return resp, err
 }
 
