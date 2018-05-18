@@ -5,9 +5,12 @@ import (
 	"sync"
 )
 
-var ok = Value("ok")
-var notFound = Value("not_found")
-var one = Value("1")
+var (
+	ok       = Value("ok")
+	notFound = Value("not_found")
+	one      = Value("1")
+	zero     = Value("0")
+)
 
 // Client Single connected client
 type Client struct {

@@ -90,9 +90,9 @@ func NewValue(arg interface{}) (Value, error) {
 		return Value(strconv.AppendFloat(nil, float64(arg), 'f', -1, 64)), nil
 	case bool:
 		if arg {
-			return Value("1"), nil
+			return one, nil
 		} else {
-			return Value("0"), nil
+			return zero, nil
 		}
 	case nil:
 		return Value(""), nil
