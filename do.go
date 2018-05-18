@@ -5,23 +5,24 @@ import (
 	"time"
 )
 
-// GetConn get conn
+// GetConn get connection
 func (c *Client) GetConn() (*Conn, error) {
 	conni := c.pool.Get()
-	var conn *Conn
 	switch t := conni.(type) {
 	case *Conn:
-		conn = t
+		return t, nil
 	case error:
 		return nil, t
 	default:
 		return nil, fmt.Errorf("Error version")
 	}
-	return conn, nil
 }
 
 // PutConn Put back the connection
 func (c *Client) PutConn(conn *Conn) {
+	if conn == nil {
+		return
+	}
 	c.pool.Put(conn)
 }
 
