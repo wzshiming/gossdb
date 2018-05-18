@@ -5,11 +5,11 @@ import (
 	"net/url"
 )
 
+// Option is a function that configures a Client
 type Option func(c *Client)
 
-// Url
-// ssdb://127.0.0.1:8888[?Auth=password]
-func Url(u string) Option {
+// URL ssdb://127.0.0.1:8888[?Auth=password]
+func URL(u string) Option {
 	uu, _ := url.Parse(u)
 	return func(c *Client) {
 		c.addr = uu.Host
@@ -17,8 +17,7 @@ func Url(u string) Option {
 	}
 }
 
-// Addr
-// 127.0.0.1:8888
+// Addr 127.0.0.1:8888
 func Addr(addr string) Option {
 	return func(c *Client) {
 		c.addr = addr

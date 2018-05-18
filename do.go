@@ -20,6 +20,7 @@ func (c *Client) GetConn() (*Conn, error) {
 	return conn, nil
 }
 
+// PutConn Put back the connection
 func (c *Client) PutConn(conn *Conn) {
 	c.pool.Put(conn)
 }

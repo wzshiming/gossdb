@@ -7,6 +7,7 @@ import (
 	"strconv"
 )
 
+// Conn a SSDB connection
 type Conn struct {
 	conn net.Conn
 	r    *bufio.Reader
@@ -21,6 +22,7 @@ func newConn(conn net.Conn) *Conn {
 	}
 }
 
+// Send send data
 func (c *Conn) Send(args Values) error {
 	for _, arg := range args {
 		c.w.Write(strconv.AppendInt(nil, int64(len(arg)), 10))
@@ -32,6 +34,7 @@ func (c *Conn) Send(args Values) error {
 	return c.w.Flush()
 }
 
+// Recv receive	data
 func (c *Conn) Recv() (Values, error) {
 	resp := Values{}
 loop:
