@@ -12,7 +12,7 @@ var (
 	zero     = Value("0")
 )
 
-// Client Single connected client
+// Client connected client
 type Client struct {
 	pool        sync.Pool
 	dialHandler func(addr string) (net.Conn, error)
@@ -20,7 +20,7 @@ type Client struct {
 	addr        string
 }
 
-// Connect Single connected client by net.Conn
+// Connect connected client
 func Connect(opts ...Option) (*Client, error) {
 	c := &Client{
 		dialHandler: func(addr string) (net.Conn, error) {
