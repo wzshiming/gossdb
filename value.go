@@ -56,6 +56,8 @@ type Value []byte
 
 func NewValue(arg interface{}) (Value, error) {
 	switch arg := arg.(type) {
+	case Value:
+		return arg, nil
 	case time.Duration:
 		return Value(strconv.AppendUint(nil, uint64(arg/time.Second), 10)), nil
 	case fmt.Stringer:

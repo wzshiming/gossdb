@@ -103,12 +103,12 @@ func (c *Client) ZCount(name string, start, end string) (int64, error) {
 }
 
 // ZSum Returns the sum of elements of the sorted set stored at the specified key which have scores in the range [start,end].
-func (c *Client) ZSum(name string, scoreStart, scoreEnd interface{}) (int64, error) {
+func (c *Client) ZSum(name string, scoreStart, scoreEnd int64) (int64, error) {
 	return c.doInt("zsum", name, scoreStart, scoreEnd)
 }
 
 // ZAvg Returns the average of elements of the sorted set stored at the specified key which have scores in the range [start,end].
-func (c *Client) ZAvg(name string, scoreStart, scoreEnd interface{}) (int64, error) {
+func (c *Client) ZAvg(name string, scoreStart, scoreEnd int64) (int64, error) {
 	return c.doInt("zavg", name, scoreStart, scoreEnd)
 }
 

@@ -1,7 +1,7 @@
 package ssdb
 
 // HSet Set the string value in argument as value of the key of a hashmap.
-func (c *Client) HSet(name, key string, value interface{}) (bool, error) {
+func (c *Client) HSet(name, key string, value Value) (bool, error) {
 	return c.doBool("hset", name, key, value)
 }
 
@@ -98,7 +98,7 @@ func (c *Client) HClear(name string) error {
 }
 
 // MultiHSet Set multiple key-value pairs(kvs) of a hashmap in one method call.
-func (c *Client) MultiHSet(name string, kvs map[string]interface{}) error {
+func (c *Client) MultiHSet(name string, kvs map[string]Value) error {
 
 	args := []interface{}{"multi_hset", name}
 	for k, v := range kvs {

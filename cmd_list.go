@@ -1,16 +1,20 @@
 package ssdb
 
 // QPushFront Add one or more than one element to the head of the queue.
-func (c *Client) QPushFront(name string, item ...interface{}) (int64, error) {
+func (c *Client) QPushFront(name string, item ...Value) (int64, error) {
 	args := []interface{}{"qpush_front", name}
-	args = append(args, item...)
+	for _, v := range item {
+		args = append(args, v)
+	}
 	return c.doInt(args...)
 }
 
 // QPushBack Add an or more than one element to the end of the queue.
-func (c *Client) QPushBack(name string, item ...interface{}) (int64, error) {
+func (c *Client) QPushBack(name string, item ...Value) (int64, error) {
 	args := []interface{}{"qpush_back", name}
-	args = append(args, item...)
+	for _, v := range item {
+		args = append(args, v)
+	}
 	return c.doInt(args...)
 }
 
@@ -52,7 +56,7 @@ func (c *Client) QGet(key string, index int64) (Value, error) {
 
 // QSet Sets the list element at index to value.
 // An error is returned for out of range indexes.
-func (c *Client) QSet(key string, index int64, value interface{}) error {
+func (c *Client) QSet(key string, index int64, value Value) error {
 	return c.doNil("qset", key, index, value)
 }
 

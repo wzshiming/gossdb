@@ -5,18 +5,18 @@ import (
 )
 
 // Set Set the value of the key.
-func (c *Client) Set(key string, value interface{}) error {
+func (c *Client) Set(key string, value Value) error {
 	return c.doNil("set", key, value)
 }
 
 // SetX Set the value of the key, with a time to live.
 // Unlike Redis, the ttl will not be remove when later set the same key!
-func (c *Client) SetX(key string, value interface{}, ttl time.Duration) error {
+func (c *Client) SetX(key string, value Value, ttl time.Duration) error {
 	return c.doNil("setx", key, value, ttl)
 }
 
 // SetNX Set the string value in argument as value of the key if and only if the key doesn't exist.
-func (c *Client) SetNX(key string, value interface{}) (bool, error) {
+func (c *Client) SetNX(key string, value Value) (bool, error) {
 	return c.doBool("setnx", key, value)
 }
 
@@ -36,7 +36,7 @@ func (c *Client) Get(key string) (Value, error) {
 }
 
 // GetSet Sets a value and returns the previous entry at that key.
-func (c *Client) GetSet(key string, value interface{}) (Value, error) {
+func (c *Client) GetSet(key string, value Value) (Value, error) {
 	return c.doValue("getset", key, value)
 }
 
@@ -132,7 +132,7 @@ func (c *Client) RScanRangeAll(keyStart, keyEnd string, limit int64, cb func(str
 }
 
 // MultiSet Set multiple key-value pairs(kvs) in one method call.
-func (c *Client) MultiSet(kvs map[string]interface{}) (err error) {
+func (c *Client) MultiSet(kvs map[string]Value) (err error) {
 	args := []interface{}{"multi_set"}
 	for k, v := range kvs {
 		args = append(args, k)
