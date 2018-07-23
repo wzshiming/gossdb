@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -20,6 +21,14 @@ func NewValues(arg []interface{}) (Values, error) {
 		vs = append(vs, d)
 	}
 	return vs, nil
+}
+
+// String return string
+func (v Values) String() string {
+	if v == nil {
+		return "nil"
+	}
+	return strings.Join(v.Strings(), "\n")
 }
 
 // Strings get []string

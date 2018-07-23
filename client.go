@@ -6,10 +6,11 @@ import (
 )
 
 var (
-	ok       = Value("ok")
-	notFound = Value("not_found")
-	one      = Value("1")
-	zero     = Value("0")
+	ok          = Value("ok")
+	notFound    = Value("not_found")
+	clientError = Value("client_error")
+	one         = Value("1")
+	zero        = Value("0")
 )
 
 // Client connected client
