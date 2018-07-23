@@ -33,7 +33,7 @@ func (c *Client) DoProcessing(args ...interface{}) (Values, error) {
 		return nil, err
 	}
 	v, err := c.Do(val)
-	return ResultProcessing(args, v, err)
+	return ResultProcessing(v, err)
 }
 
 // Do send and recv
@@ -55,6 +55,14 @@ func (c *Client) Do(args Values) (v Values, err0 error) {
 		return nil, err
 	}
 	return conn.Recv()
+}
+
+func (c *Client) doInfo(args ...interface{}) (map[string]Value, error) {
+	v, err := c.DoProcessing(args...)
+	if err != nil {
+		return nil, err
+	}
+	return v[1:].MapStringValue(), nil
 }
 
 func (c *Client) doMapStringInt(args ...interface{}) (map[string]int64, error) {

@@ -6,10 +6,10 @@ import (
 
 var errIsEmpty = fmt.Errorf("error: respone is empty")
 
-func ResultProcessing(args []interface{}, resp Values, err error) (Values, error) {
+func ResultProcessing(resp Values, err error) (Values, error) {
 
 	if err != nil {
-		return nil, fmt.Errorf("%s: %v", err.Error(), args)
+		return nil, fmt.Errorf("error: %v", err.Error())
 	}
 
 	if len(resp) < 1 {
@@ -25,11 +25,8 @@ func ResultProcessing(args []interface{}, resp Values, err error) (Values, error
 	}
 
 	if resp[0].Equal(clientError) {
-		return resp[1:], fmt.Errorf("client error: %v", resp)
+		return nil, fmt.Errorf("error: %v", resp[1].String())
 	}
 
-	if len(args) > 0 {
-		return nil, fmt.Errorf("error: %v, parameter %v", resp[0], args)
-	}
 	return nil, fmt.Errorf("error: parameter %v", resp[0])
 }

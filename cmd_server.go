@@ -14,6 +14,6 @@ func (c *Client) DBSize() (int64, error) {
 }
 
 // Info Return information about the server.
-func (c *Client) Info() ([]string, error) {
-	return c.doStrings("info")
+func (c *Client) Info() (map[string]Value, error) {
+	return c.doInfo("info")
 }
