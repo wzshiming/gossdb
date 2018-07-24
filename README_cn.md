@@ -1,6 +1,6 @@
 # SSDB 的 golang 客户端
 
-从官方客户端派生更符合golang风格并支持连接池。
+这是 SSDB 客户端以及命令行工具。
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/wzshiming/ssdb)](https://goreportcard.com/report/github.com/wzshiming/ssdb)
 [![GoDoc](https://godoc.org/github.com/wzshiming/ssdb?status.svg)](https://godoc.org/github.com/wzshiming/ssdb)
@@ -85,6 +85,56 @@ func main() {
 
 	return
 }
+```
+
+命令行工具
+
+``` logs
+
+go get -u -v github.com/wzshiming/ssdb/cmd/ssdb
+
+ssdb -p password 127.0.0.1:8888
+
+SSDB (cli) - ssdb command line tool.
+Copyright (c) 2018 github.com/wzshiming
+
+        'help' for help, 'quit' to quit.
+
+ssdb-server 1.9.4
+SSDB 127.0.0.1:8888 > set a xxx
+
+1
+1 result(s) (3ms)
+SSDB 127.0.0.1:8888 > get a
+
+xxx
+1 result(s) (3ms)
+SSDB 127.0.0.1:8888 > del a
+
+1
+1 result(s) (5ms)
+SSDB 127.0.0.1:8888 > get a
+
+not found
+(4ms)
+SSDB 127.0.0.1:8888 > zset z a 3
+
+0
+1 result(s) (3ms)
+SSDB 127.0.0.1:8888 > multi_zset z b -1 c 5 d 3
+
+0
+1 result(s) (5ms)
+SSDB 127.0.0.1:8888 > zrange z 0 10
+
+key value
+--- -----
+b   -1
+a   3
+d   3
+c   5
+4 result(s) (28ms)
+
 ```
 
 ## API 支持
