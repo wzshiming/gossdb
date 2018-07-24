@@ -31,6 +31,7 @@ Usage of %s:
 	err := term.Run(args[0], *auth)
 	if err != nil {
 		fmt.Println(err.Error())
+		flag.Usage()
 		os.Exit(2)
 		return
 	}
