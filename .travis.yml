@@ -1,0 +1,24 @@
+language: go
+sudo: false
+notifications:
+  email: false
+jobs:
+  include:
+  - go: 1.10.x
+    stage: deploy
+    go_import_path: github.com/wzshiming/ssdb
+    install: skip
+    script: skip
+    before_deploy:
+    - BASENAME=ssdb ./build_all.bash
+    deploy:
+      provider: releases
+      api_key:
+        secure: Okg7qQJ+hnI+Z/1wM7AaGPYiGOWdEy+ijhclGPkoWhMlkgOYjJnyq7eiQkKh8R2/KfjGC6HqTwcAi+MeEStl+uywAYHjMbQqTYYHT3wE7xBCcen8uPDM6HAPCUXK78AAMceRcMHHRhmit55A8Jxq2E+vMYi1mVxOWikYJXLOKAWXrt4GIPyhHYqo426aEvzDn//+gYOYPPpcVHGxV8p+ZWDLRI+t/BVbxiTJVXP/v+h+VWWZNHyF8u/BMirwzXXbmuFiJs5r5qB9sW5CPW1FwJzQqnlHVeRKBc89bMIm3sTRAoe1dGXVhykyW+PdEaGum44ZzTsa2xpQat1UlCae6FTexZvRMm+X4it3ruXbim5CPguCT0wjMFf2YP4HYYjd9Frn1fDqwm8Zngwj8KpNfmSYn/kqKKHF6C16fkT7gU9c/H1UrhjroSKPmHe51X+ZqQu8d5WZK2mV4Ys3vOBFbuu4GGF/fqAxXHENrZSKXlfBv7coV5ogUc0/tgb155s9KNAEU4RfeA2u7hY7uVQdGeczBFt6k7Kya4oUSgtgQuCSjfUNZ49vYIISTTlVw7JeVAbhYhJq4EXY/IBIqYo2XyJFmsgYEIpWBa2V8dghmcDSFSvYqOPJYdKKD6yXY4zcxculpV+B6PSWqt7qK9Q19hyZKoQuL2A++pmH8r9xF4s=
+      file_glob: true
+      file: release/*
+      skip_cleanup: true
+      on:
+        repo: wzshiming/ssdb
+        branch: master
+        tags: true
