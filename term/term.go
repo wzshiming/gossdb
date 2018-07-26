@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"time"
 
@@ -39,7 +40,7 @@ func (c *Terminal) Run() error {
 		c.Reader,
 		c.Writer,
 	}, "")
-
+	logger := log.New(c.Writer, "", log.LstdFlags)
 	for {
 		line, err := ter.ReadPassword(c.Prompt)
 		if err != nil {
@@ -54,13 +55,15 @@ func (c *Terminal) Run() error {
 		read.TrimLeadingSpace = true
 		da, err := read.ReadAll()
 		if err != nil {
-			return err
+			logger.Println(err)
+			continue
 		}
 		for _, v := range da {
 			beg := time.Now()
 			result, size, err := c.CmdFunc(v...)
 			if err != nil {
-				return err
+				logger.Println(err)
+				continue
 			}
 			ter.Write([]byte(result))
 
