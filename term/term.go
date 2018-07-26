@@ -65,9 +65,8 @@ func (c *Terminal) Run() error {
 				logger.Println(err)
 				continue
 			}
-			ter.Write([]byte(result))
-
 			sub := time.Now().Sub(beg).Truncate(time.Second / 1000)
+			ter.Write([]byte(result))
 			if size == 0 {
 				ter.Write([]byte(fmt.Sprintf("\n(%s)", sub)))
 			} else {
