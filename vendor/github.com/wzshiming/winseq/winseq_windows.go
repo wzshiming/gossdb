@@ -3,8 +3,9 @@
 package winseq
 
 import (
-	"syscall"
-	"unsafe"
+	"os"
+
+	"golang.org/x/sys/windows"
 )
 
 // This package only works with Windows.
@@ -18,36 +19,22 @@ func init() {
 }
 
 var (
-	kernel32                      = syscall.NewLazyDLL("kernel32.dll")
-	procGetConsoleMode            = kernel32.NewProc("GetConsoleMode")
-	procSetConsoleMode            = kernel32.NewProc("SetConsoleMode")
-	hStdout                       = uintptr(syscall.Stdout)
-	flagVirtualTerminalProcessing = uintptr(0x0004)
+	hStdout = windows.Handle(os.Stdout.Fd())
 )
 
 func enableVirtualTerminalProcessing() (err error) {
-	var mode uintptr
-	var ok uintptr
-	defer recover()
-	ok, _, err = procGetConsoleMode.Call(hStdout, uintptr(unsafe.Pointer(&mode)))
-	if ok != 0 {
-		err = nil
-	}
+	var mode uint32
+	err = windows.GetConsoleMode(hStdout, &mode)
 	if err != nil {
 		return err
 	}
 
-	if 0 != mode&flagVirtualTerminalProcessing {
+	if 0 != mode&windows.ENABLE_VIRTUAL_TERMINAL_PROCESSING {
 		return nil
 	}
-
-	ok, _, err = procSetConsoleMode.Call(hStdout, mode|flagVirtualTerminalProcessing)
-	if ok != 0 {
-		err = nil
-	}
+	err = windows.SetConsoleMode(hStdout, mode|windows.ENABLE_VIRTUAL_TERMINAL_PROCESSING)
 	if err != nil {
 		return err
 	}
-
 	return nil
 }

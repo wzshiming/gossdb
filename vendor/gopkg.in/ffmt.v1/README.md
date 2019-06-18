@@ -4,7 +4,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/go-ffmt/ffmt)](https://goreportcard.com/report/github.com/go-ffmt/ffmt)
 [![GoDoc](https://godoc.org/github.com/go-ffmt/ffmt?status.svg)](https://godoc.org/github.com/go-ffmt/ffmt)
 [![GitHub license](https://img.shields.io/github/license/go-ffmt/ffmt.svg)](https://github.com/go-ffmt/ffmt/blob/master/LICENSE)
-[![cover.run](https://cover.run/go/github.com/go-ffmt/ffmt.svg?style=flat&tag=golang-1.10)](https://cover.run/go?tag=golang-1.10&repo=github.com%2Fgo-ffmt%2Fffmt)
+[![cover.run](https://cover.run/go/gopkg.in/ffmt.v1.svg?style=flat&tag=golang-1.10)](https://cover.run/go?tag=golang-1.10&repo=gopkg.in%2Fffmt.v1)
 
 - [English](https://github.com/go-ffmt/ffmt/blob/master/README.md)
 - [简体中文](https://github.com/go-ffmt/ffmt/blob/master/README_cn.md)
@@ -36,13 +36,15 @@ func main() {
 	example()
 }
 
+type mt struct {
+	String string
+	Int    int
+	Slice  []int
+	Map    map[string]interface{}
+}
+
 func example() {
-	m := struct {
-		String string
-		Int    int
-		Slice  []int
-		Map    map[string]interface{}
-	}{
+	m := mt{
 		"hello world",
 		100,
 		[]int{1, 2, 3, 4, 5, 6},
@@ -149,13 +151,18 @@ func example() {
 	/*
 		main.go:124  hello
 	*/
+
+	ffmt.Print(ffmt.BytesViewer("Hello world! Hello All!"))
+	/*
+		| Address  | Hex                                             | Text             |
+		| -------: | :---------------------------------------------- | :--------------- |
+		| 00000000 | 48 65 6c 6c 6f 20 77 6f 72 6c 64 21 20 48 65 6c | Hello world! Hel |
+		| 00000010 | 6c 6f 20 41 6c 6c 21                            | lo All!          |
+	*/
 }
 
 
 ```
-
-
-
 
 ## License
 

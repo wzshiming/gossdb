@@ -20,8 +20,12 @@ func ToTable(t interface{}, is ...interface{}) [][]string {
 		}
 	case reflect.Map:
 		ks := val.MapKeys()
+		valueSlice(ks).Sort()
 		for i := 0; i != len(ks); i++ {
 			m := ks[i]
+			if m.Kind() == reflect.Ptr || m.Kind() == reflect.Interface {
+				m = m.Elem()
+			}
 			if m.CanInterface() {
 				r[0] = append(r[0], fmt.Sprint(m.Interface()))
 			}
@@ -108,7 +112,7 @@ func TableText(b string, prefix, split string) string {
 			if i == 0 {
 				row = append(row, strings.TrimRightFunc(col, unicode.IsSpace))
 			} else {
-				row = append(row, strings.TrimSpace(col))
+				row = append(row, strings.TrimFunc(col, unicode.IsSpace))
 			}
 			if i != len(ss)-1 {
 				row[i] = row[i] + split
