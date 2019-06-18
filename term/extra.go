@@ -10,9 +10,9 @@ type Extra struct {
 	Other CmdFunc
 }
 
-func (e *Extra) Cmd(cmd ...string) (string, int, error) {
+func (e *Extra) Cmd(cmd ...string) (string, error) {
 	if len(cmd) == 0 {
-		return "", 0, nil
+		return "", nil
 	}
 	fun := e.Map[strings.ToLower(cmd[0])]
 	if fun != nil {
@@ -35,11 +35,11 @@ func NewExtra(other CmdFunc) *Extra {
 	return e
 }
 
-func quit(cmd ...string) (string, int, error) {
+func quit(cmd ...string) (string, error) {
 	os.Exit(0)
-	return "", 0, nil
+	return "", nil
 }
 
-func help(cmd ...string) (string, int, error) {
-	return usage, 0, nil
+func help(cmd ...string) (string, error) {
+	return usage, nil
 }

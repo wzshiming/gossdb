@@ -4,8 +4,6 @@ var welcome = `SSDB (cli) - ssdb command line tool.
 Copyright (c) 2018 github.com/wzshiming
 
 	'help' for help, 'quit' to quit.
-	
-ssdb-server %s
 
 `
 

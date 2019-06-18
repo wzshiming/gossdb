@@ -31,36 +31,36 @@ func Run(addr string, auth string) error {
 }
 
 func Conn(cli *ssdb.Client) (CmdFunc, error) {
-	return func(cmd ...string) (string, int, error) {
+	return func(cmd ...string) (string, error) {
 		if len(cmd) == 0 {
-			return "", 0, nil
+			return "", nil
 		}
 		ss := ssdb.Values{}
 		for _, list := range cmd {
 			val, err := ssdb.NewValue(list)
 			if err != nil {
-				return "", 0, err
+				return "", err
 			}
 			ss = append(ss, val)
 		}
 		val, err := cli.Do(ss)
 		if err != nil {
-			return "", 0, err
+			return "", err
 		}
 		val, err = ssdb.ResultProcessing(val, err)
 		if err != nil {
-			return err.Error(), 0, nil
+			return err.Error(), nil
 		}
 		if val == nil {
-			return "not found", 0, nil
+			return "not found", nil
 		}
 		key := strings.Replace(strings.ToLower(cmd[0]), "_", "", -1)
 		if key == "info" {
-			return val[1:].String(), 0, nil
+			return val[1:].String(), nil
 		}
 
 		if kind[key] != "map" {
-			return val.String(), len(val), nil
+			return val.String(), nil
 		}
 		table := [][]string{
 			{"key", "value"},
@@ -69,7 +69,7 @@ func Conn(cli *ssdb.Client) (CmdFunc, error) {
 		for i := 0; i < len(val); i += 2 {
 			table = append(table, []string{val[i].String(), val[i+1].String()})
 		}
-		return strings.Join(ffmt.FmtTable(table), "\n"), len(val) / 2, nil
+		return strings.Join(ffmt.FmtTable(table), "\n"), nil
 
 	}, nil
 }
