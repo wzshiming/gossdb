@@ -27,7 +27,7 @@ func Run(addr string, auth string) error {
 		return err
 	}
 
-	return NewTerminal(fmt.Sprintf("\nSSDB %s > ", addr), NewExtra(conn).Cmd).Run()
+	return NewTerminal(fmt.Sprintf("SSDB %s > ", addr), NewExtra(conn).Cmd).Run()
 }
 
 func Conn(cli *ssdb.Client) (CmdFunc, error) {

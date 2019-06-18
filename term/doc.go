@@ -5,7 +5,9 @@ Copyright (c) 2018 github.com/wzshiming
 
 	'help' for help, 'quit' to quit.
 	
-ssdb-server %s`
+ssdb-server %s
+
+`
 
 var usage = `- Server
   - auth password - Authenticate the connection.

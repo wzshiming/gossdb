@@ -39,10 +39,20 @@ func (c *Terminal) Run() error {
 	}{
 		c.Reader,
 		c.Writer,
-	}, "")
+	}, c.Prompt)
+
 	logger := log.New(c.Writer, "", log.LstdFlags)
+
+	ReadLine := func() (string, error) {
+		oldState, err := terminal.MakeRaw(0)
+		if err != nil {
+			return "", err
+		}
+		defer terminal.Restore(0, oldState)
+		return ter.ReadLine()
+	}
 	for {
-		line, err := ter.ReadPassword(c.Prompt)
+		line, err := ReadLine()
 		if err != nil {
 			if err == io.EOF {
 				continue
@@ -68,9 +78,9 @@ func (c *Terminal) Run() error {
 			sub := time.Now().Sub(beg).Truncate(time.Second / 1000)
 			ter.Write([]byte(result))
 			if size == 0 {
-				ter.Write([]byte(fmt.Sprintf("\n(%s)", sub)))
+				ter.Write([]byte(fmt.Sprintf("\n(%s)\n", sub)))
 			} else {
-				ter.Write([]byte(fmt.Sprintf("\n%d result(s) (%s)", size, sub)))
+				ter.Write([]byte(fmt.Sprintf("\n%d result(s) (%s)\n", size, sub)))
 			}
 
 		}
