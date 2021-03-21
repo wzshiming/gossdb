@@ -4,7 +4,10 @@ import (
 	"fmt"
 )
 
-var errIsEmpty = fmt.Errorf("error: respone is empty")
+var (
+	ErrIsEmpty  = fmt.Errorf("error: respone is empty")
+	ErrNotFound = fmt.Errorf("error: not found")
+)
 
 func ResultProcessing(resp Values, err error) (Values, error) {
 
@@ -13,7 +16,7 @@ func ResultProcessing(resp Values, err error) (Values, error) {
 	}
 
 	if len(resp) < 1 {
-		return nil, errIsEmpty
+		return nil, ErrIsEmpty
 	}
 
 	if resp[0].Equal(ok) {
@@ -21,12 +24,12 @@ func ResultProcessing(resp Values, err error) (Values, error) {
 	}
 
 	if resp[0].Equal(notFound) {
-		return nil, nil
+		return nil, ErrNotFound
 	}
 
 	if resp[0].Equal(clientError) {
-		return nil, fmt.Errorf("error: %v", resp[1].String())
+		return nil, fmt.Errorf("error: client error: %v", resp[1:].String())
 	}
 
-	return nil, fmt.Errorf("error: parameter %v", resp[0])
+	return nil, fmt.Errorf("error: parameter: %v", resp[0])
 }
