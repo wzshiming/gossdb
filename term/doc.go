@@ -5,7 +5,7 @@ import (
 )
 
 var welcome = `SSDB (cli) - ssdb command line tool.
-Copyright (c) 2018 github.com/wzshiming
+Copyright (c) 2018-NOW wzshiming
 
 	'help' for help, 'quit' to quit.
 

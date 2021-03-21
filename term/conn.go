@@ -51,10 +51,7 @@ func Conn(cli *ssdb.Client) (CmdFunc, error) {
 		if err != nil {
 			return err.Error(), nil
 		}
-		if val == nil {
-			return "not found", nil
-		}
-		key := strings.Replace(strings.ToLower(cmd[0]), "_", "", -1)
+		key := strings.Replace(strings.ToLower(cmd[0]), "_", " ", -1)
 		if key == "info" {
 			return val[1:].String(), nil
 		}

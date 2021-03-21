@@ -68,7 +68,7 @@ func (c *Terminal) Run() error {
 				logger.Println(err)
 				continue
 			}
-			sub := time.Now().Sub(beg).Truncate(time.Millisecond)
+			sub := time.Since(beg).Truncate(time.Millisecond)
 			fmt.Fprintln(c.Writer, result)
 			fmt.Fprintf(c.Writer, "(%s)\n", sub)
 		}
