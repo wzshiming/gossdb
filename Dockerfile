@@ -1,8 +1,8 @@
-FROM golang:1.10-alpine3.8 AS builder
+FROM golang:1.16-alpine AS builder
 WORKDIR /go/src/github.com/wzshiming/ssdb/
 COPY . .
 RUN go install ./cmd/...
 
-FROM scratch
+FROM alpine
 COPY --from=builder /go/bin/ssdb /usr/local/bin/
-ENTRYPOINT ssdb
+ENTRYPOINT /usr/local/bin/ssdb
