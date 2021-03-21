@@ -17,7 +17,7 @@ func main() {
 		return
 	}
 
-	err = db.Set("a", "xxx")
+	err = db.Set("a", ssdb.Value("xxx"))
 	if err != nil {
 		fmt.Println(err)
 		return

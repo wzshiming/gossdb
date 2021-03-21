@@ -1,9 +1,10 @@
 # SSDB 的 golang 客户端
 
-这是 SSDB 客户端以及命令行工具。
+这是 SSDB 客户端以及命令行工具  
+Fork 自 [gossdb](https://github.com/ssdb/gossdb), 但是由于其不符合 Golang 的风格以及不积极开发, 而重新开发的一个 SSDB 的客户端库。  
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/wzshiming/ssdb)](https://goreportcard.com/report/github.com/wzshiming/ssdb)
-[![GoDoc](https://godoc.org/github.com/wzshiming/ssdb?status.svg)](https://godoc.org/github.com/wzshiming/ssdb)
+[![GoDoc](https://pkg.go.dev/badge/github.com/wzshiming/ssdb)](https://pkg.go.dev/github.com/wzshiming/ssdb)
 [![GitHub license](https://img.shields.io/github/license/wzshiming/ssdb.svg)](https://github.com/wzshiming/ssdb/blob/master/LICENSE)
 
 - [English](https://github.com/wzshiming/ssdb/blob/master/README.md)
@@ -31,7 +32,7 @@ func main() {
 		return
 	}
 
-	err = db.Set("a", "xxx")
+	err = db.Set("a", ssdb.Value("xxx"))
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -96,7 +97,7 @@ go get -u -v github.com/wzshiming/ssdb/cmd/ssdb
 ssdb -p password 127.0.0.1:8888
 
 SSDB (cli) - ssdb command line tool.
-Copyright (c) 2018 github.com/wzshiming
+Copyright (c) 2018 wzshiming
 
         'help' for help, 'quit' to quit.
 

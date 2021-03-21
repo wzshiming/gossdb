@@ -1,9 +1,10 @@
 # SSDB client for golang
 
-This is the SSDB client and command-line tool.
+This is the SSDB client and command-line tool.  
+Fork from [gossdb](https://github.com/ssdb/gossdb), but because it does not conform to the style of Golang and is not actively developed, the SSDB is rewrited.  
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/wzshiming/ssdb)](https://goreportcard.com/report/github.com/wzshiming/ssdb)
-[![GoDoc](https://godoc.org/github.com/wzshiming/ssdb?status.svg)](https://godoc.org/github.com/wzshiming/ssdb)
+[![GoDoc](https://pkg.go.dev/badge/github.com/wzshiming/ssdb)](https://pkg.go.dev/github.com/wzshiming/ssdb)
 [![GitHub license](https://img.shields.io/github/license/wzshiming/ssdb.svg)](https://github.com/wzshiming/ssdb/blob/master/LICENSE)
 
 - [English](https://github.com/wzshiming/ssdb/blob/master/README.md)
@@ -31,7 +32,7 @@ func main() {
 		return
 	}
 
-	err = db.Set("a", "xxx")
+	err = db.Set("a", ssdb.Value("xxx"))
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -96,7 +97,7 @@ go get -u -v github.com/wzshiming/ssdb/cmd/ssdb
 ssdb -p password 127.0.0.1:8888
 
 SSDB (cli) - ssdb command line tool.
-Copyright (c) 2018 github.com/wzshiming
+Copyright (c) 2018 wzshiming
 
         'help' for help, 'quit' to quit.
 
@@ -239,4 +240,4 @@ c   5
 
 ## License
 
-Pouch is licensed under the MIT License. See [LICENSE](https://github.com/wzshiming/ssdb/blob/master/LICENSE) for the full license text.
+Licensed under the MIT License. See [LICENSE](https://github.com/wzshiming/ssdb/blob/master/LICENSE) for the full license text.
