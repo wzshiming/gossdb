@@ -52,3 +52,8 @@ func ReadWriteTimeoutOption(readWriteTimeout time.Duration) Option {
 		c.readWriteTimeout = readWriteTimeout
 	}
 }
+func IgnoreGetNotFoundError(ignoreGetNotFoundError bool) Option {
+	return func(c *Client) {
+		c.ignoreGetNotFoundError = ignoreGetNotFoundError
+	}
+}

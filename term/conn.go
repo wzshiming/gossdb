@@ -47,7 +47,7 @@ func Conn(cli *ssdb.Client) (CmdFunc, error) {
 		if err != nil {
 			return "", err
 		}
-		val, err = ssdb.ResultProcessing(val, err)
+		val, err = cli.ResultProcessing(val, err)
 		if err != nil {
 			return err.Error(), nil
 		}

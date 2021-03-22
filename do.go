@@ -33,7 +33,7 @@ func (c *Client) DoProcessing(args ...interface{}) (Values, error) {
 		return nil, err
 	}
 	v, err := c.Do(val)
-	return ResultProcessing(v, err)
+	return c.ResultProcessing(v, err)
 }
 
 // Do send and recv
@@ -62,6 +62,9 @@ func (c *Client) doInfo(args ...interface{}) (map[string]Value, error) {
 	if err != nil {
 		return nil, err
 	}
+	if len(v) < 2 { // ignore not found error
+		return map[string]Value{}, nil
+	}
 	return v[1:].MapStringValue(), nil
 }
 
@@ -86,6 +89,9 @@ func (c *Client) doDuration(args ...interface{}) (time.Duration, error) {
 	if err != nil {
 		return 0, err
 	}
+	if len(v) < 1 { // ignore not found error
+		return 0, nil
+	}
 	return v[0].Duration(), nil
 }
 
@@ -93,6 +99,9 @@ func (c *Client) doInt(args ...interface{}) (int64, error) {
 	v, err := c.DoProcessing(args...)
 	if err != nil {
 		return 0, err
+	}
+	if len(v) < 1 { // ignore not found error
+		return 0, nil
 	}
 	return v[0].Int(), nil
 }
@@ -102,6 +111,9 @@ func (c *Client) doBool(args ...interface{}) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+	//if len(v) < 1 { // ignore not found error
+	//	return false, nil
+	//}
 	return v[0].Equal(one), nil
 }
 
@@ -110,7 +122,9 @@ func (c *Client) doString(args ...interface{}) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
+	if len(v) < 1 { // ignore not found error
+		return "", nil
+	}
 	return v[0].String(), nil
 }
 
@@ -126,6 +140,9 @@ func (c *Client) doValue(args ...interface{}) (Value, error) {
 	v, err := c.DoProcessing(args...)
 	if err != nil {
 		return nil, err
+	}
+	if len(v) < 1 { // ignore not found error
+		return Value{}, nil
 	}
 	return v[0], nil
 }
