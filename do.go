@@ -43,7 +43,7 @@ func (c *Client) Do(args Values) (v Values, err0 error) {
 		return nil, err
 	}
 	defer func() {
-		if err0 != nil {
+		if err0 == nil {
 			c.pool.Put(conn)
 		} else {
 			conn.Close()
