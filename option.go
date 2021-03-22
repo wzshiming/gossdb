@@ -3,6 +3,7 @@ package ssdb
 import (
 	"net"
 	"net/url"
+	"time"
 )
 
 // Option is a function that configures a Client
@@ -35,5 +36,19 @@ func Auth(auth string) Option {
 func DialHandler(df func(addr string) (net.Conn, error)) Option {
 	return func(c *Client) {
 		c.dialHandler = df
+	}
+}
+
+func DialTimeoutOption(connectTimeout time.Duration) Option {
+	return func(c *Client) {
+		c.dialHandler = func(addr string) (conn net.Conn, e error) {
+			return net.DialTimeout("tcp", addr, connectTimeout)
+		}
+	}
+}
+
+func ReadWriteTimeoutOption(readWriteTimeout time.Duration) Option {
+	return func(c *Client) {
+		c.readWriteTimeout = readWriteTimeout
 	}
 }

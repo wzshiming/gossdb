@@ -5,25 +5,38 @@ import (
 	"io"
 	"net"
 	"strconv"
+	"time"
 )
 
 // Conn a SSDB connection
 type Conn struct {
-	conn net.Conn
-	r    *bufio.Reader
-	w    *bufio.Writer
+	conn             net.Conn
+	r                *bufio.Reader
+	w                *bufio.Writer
+	readWriteTimeout time.Duration
 }
 
-func newConn(conn net.Conn) *Conn {
+func newConn(conn net.Conn, readWriteTimeout time.Duration) *Conn {
 	return &Conn{
-		conn: conn,
-		r:    bufio.NewReader(conn),
-		w:    bufio.NewWriter(conn),
+		conn:             conn,
+		r:                bufio.NewReader(conn),
+		w:                bufio.NewWriter(conn),
+		readWriteTimeout: readWriteTimeout,
 	}
 }
 
+var zeroTime = time.Time{}
+
 // Send send data
 func (c *Conn) Send(args Values) error {
+	if c.readWriteTimeout != 0 {
+		if err := c.conn.SetWriteDeadline(time.Now().Add(c.readWriteTimeout)); err == nil {
+			defer func() {
+				_ = c.conn.SetWriteDeadline(zeroTime)
+			}()
+		}
+	}
+
 	for _, arg := range args {
 		c.w.Write(strconv.AppendInt(nil, int64(len(arg)), 10))
 		c.w.WriteByte('\n')
@@ -36,6 +49,14 @@ func (c *Conn) Send(args Values) error {
 
 // Recv receive	data
 func (c *Conn) Recv() (Values, error) {
+	if c.readWriteTimeout != 0 {
+		if err := c.conn.SetWriteDeadline(time.Now().Add(c.readWriteTimeout)); err == nil {
+			defer func() {
+				_ = c.conn.SetWriteDeadline(zeroTime)
+			}()
+		}
+	}
+
 	resp := Values{}
 loop:
 	for {

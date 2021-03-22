@@ -3,6 +3,7 @@ package ssdb
 import (
 	"net"
 	"sync"
+	"time"
 )
 
 var (
@@ -15,10 +16,11 @@ var (
 
 // Client connected client
 type Client struct {
-	pool        sync.Pool
-	dialHandler func(addr string) (net.Conn, error)
-	auth        string
-	addr        string
+	pool             sync.Pool
+	dialHandler      func(addr string) (net.Conn, error)
+	auth             string
+	addr             string
+	readWriteTimeout time.Duration
 }
 
 // Connect connected client
@@ -35,7 +37,7 @@ func Connect(opts ...Option) (*Client, error) {
 			if err != nil {
 				return err
 			}
-			conn := newConn(netConn)
+			conn := newConn(netConn, c.readWriteTimeout)
 
 			err = conn.Send(Values{Value("auth"), Value(c.auth)})
 			if err != nil {
