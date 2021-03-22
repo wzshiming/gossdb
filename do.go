@@ -84,6 +84,14 @@ func (c *Client) doMapStringValue(args ...interface{}) (map[string]Value, error)
 	return v.MapStringValue(), nil
 }
 
+func (c *Client) doValueScoreSlice(args ...interface{}) (ValueScoreSlice, error) {
+	v, err := c.DoProcessing(args...)
+	if err != nil {
+		return nil, err
+	}
+	return v.ValueScoreSlice(), nil
+}
+
 func (c *Client) doDuration(args ...interface{}) (time.Duration, error) {
 	v, err := c.DoProcessing(args...)
 	if err != nil {

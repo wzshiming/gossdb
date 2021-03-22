@@ -63,13 +63,39 @@ func (c *Client) ZKeysRangeAll(name string, keyStart string, scoreStart, scoreEn
 
 // ZScan List key-score pairs where key-score in range (keyStart+scoreStart, scoreEnd].
 // Refer to scan command for more information about how it work.
+// map: ZScan -> ZScanMap
 func (c *Client) ZScan(name string, keyStart string, scoreStart, scoreEnd int64, limit int64) (map[string]int64, error) {
+	return c.ZScanMap(name, keyStart, scoreStart, scoreEnd, limit)
+}
+
+// ZScanMap (ZScan) List key-score pairs where key-score in range (keyStart+scoreStart, scoreEnd].
+// Refer to scan command for more information about how it work.
+func (c *Client) ZScanMap(name string, keyStart string, scoreStart, scoreEnd int64, limit int64) (map[string]int64, error) {
 	return c.doMapStringInt("zscan", name, keyStart, scoreStart, scoreEnd, limit)
 }
 
+// ZScanSlice (ZScan) List key-score pairs where key-score in range (keyStart+scoreStart, scoreEnd].
+// Refer to scan command for more information about how it work.
+// This command was keep elements sort to ZScan
+func (c *Client) ZScanSlice(name string, keyStart string, scoreStart, scoreEnd int64, limit int64) (ValueScoreSlice, error) {
+	return c.doValueScoreSlice("zscan", name, keyStart, scoreStart, scoreEnd, limit)
+}
+
 // ZRScan List key-score pairs of a zset, in reverse order.
+// Deprecated: ZRScan -> ZRScanMap
 func (c *Client) ZRScan(name string, keyStart string, scoreStart, scoreEnd int64, limit int64) (map[string]int64, error) {
+	return c.ZRScanMap(name, keyStart, scoreStart, scoreEnd, limit)
+}
+
+// ZRScanMap (ZRScan) List key-score pairs of a zset, in reverse order.
+func (c *Client) ZRScanMap(name string, keyStart string, scoreStart, scoreEnd int64, limit int64) (map[string]int64, error) {
 	return c.doMapStringInt("zrscan", name, keyStart, scoreStart, scoreEnd, limit)
+}
+
+// ZRScanSlice (ZRScan) List key-score pairs of a zset, in reverse order.
+// This command was keep elements sort to ZRScan
+func (c *Client) ZRScanSlice(name string, keyStart string, scoreStart, scoreEnd int64, limit int64) (ValueScoreSlice, error) {
+	return c.doValueScoreSlice("zrscan", name, keyStart, scoreStart, scoreEnd, limit)
 }
 
 // ZRank Returns the rank(index) of a given key in the specified sorted set.
@@ -83,13 +109,37 @@ func (c *Client) ZRRank(name, key string) (int64, error) {
 }
 
 // ZRange Returns a range of key-score pairs by index range [offset, offset + limit).
+// Deprecated: ZRange -> ZRangeMap
 func (c *Client) ZRange(name string, offset, limit int64) (map[string]int64, error) {
+	return c.ZRangeMap(name, offset, limit)
+}
+
+// ZRangeMap (ZRange) Returns a range of key-score pairs by index range [offset, offset + limit).
+func (c *Client) ZRangeMap(name string, offset, limit int64) (map[string]int64, error) {
 	return c.doMapStringInt("zrange", name, offset, limit)
 }
 
+// ZRangeSlice (ZRange) Returns a range of key-score pairs by index range [offset, offset + limit).
+// This command was keep elements sort to ZRange
+func (c *Client) ZRangeSlice(name string, offset, limit int64) (ValueScoreSlice, error) {
+	return c.doValueScoreSlice("zrange", name, offset, limit)
+}
+
 // ZRRange Returns a range of key-score pairs by index range [offset, offset + limit), in reverse order.
+// Deprecated: ZRRange => ZRRangeMap
 func (c *Client) ZRRange(name string, offset, limit int64) (map[string]int64, error) {
+	return c.ZRRangeMap(name, offset, limit)
+}
+
+// ZRRangeMap (ZRRange) Returns a range of key-score pairs by index range [offset, offset + limit), in reverse order.
+func (c *Client) ZRRangeMap(name string, offset, limit int64) (map[string]int64, error) {
 	return c.doMapStringInt("zrrange", name, offset, limit)
+}
+
+// ZRRangeSlice (ZRRange) Returns a range of key-score pairs by index range [offset, offset + limit), in reverse order.
+// This command was keep elements sort to ZRRange
+func (c *Client) ZRRangeSlice(name string, offset, limit int64) (ValueScoreSlice, error) {
+	return c.doValueScoreSlice("zrrange", name, offset, limit)
 }
 
 // ZClear Delete all keys in a zset.
@@ -123,13 +173,37 @@ func (c *Client) ZRemRangeByScore(name string, start, end int64) error {
 }
 
 // ZPopFront Since 1.9.0, Delete and return limit element(s) from front of the zset.
+// Deprecated: ZPopFront -> ZPopFrontMap
 func (c *Client) ZPopFront(name string, limit int64) (map[string]int64, error) {
+	return c.ZPopFrontMap(name, limit)
+}
+
+// ZPopFrontMap (ZPopFront) Since 1.9.0, Delete and return limit element(s) from front of the zset.
+func (c *Client) ZPopFrontMap(name string, limit int64) (map[string]int64, error) {
 	return c.doMapStringInt("zpop_front", name, limit)
 }
 
+// ZPopFrontSlice (ZPopFront) Since 1.9.0, Delete and return limit element(s) from front of the zset.
+// This command was keep elements sort to ZPopFront
+func (c *Client) ZPopFrontSlice(name string, limit int64) (ValueScoreSlice, error) {
+	return c.doValueScoreSlice("zpop_front", name, limit)
+}
+
 // ZPopBack Since 1.9.0, Delete and return limit element(s) from back of the zset.
+// Deprecated: ZPopBack -> ZPopBackMap
 func (c *Client) ZPopBack(name string, limit int64) (map[string]int64, error) {
+	return c.ZPopBackMap(name, limit)
+}
+
+// ZPopBackMap (ZPopBack) Since 1.9.0, Delete and return limit element(s) from back of the zset.
+func (c *Client) ZPopBackMap(name string, limit int64) (map[string]int64, error) {
 	return c.doMapStringInt("zpop_back", name, limit)
+}
+
+// ZPopBackSlice (ZPopBack) Since 1.9.0, Delete and return limit element(s) from back of the zset.
+// This command was keep elements sort to ZPopBack
+func (c *Client) ZPopBackSlice(name string, limit int64) (ValueScoreSlice, error) {
+	return c.doValueScoreSlice("zpop_back", name, limit)
 }
 
 // MultiZSet Set multiple key-score pairs(kvs) of a zset in one method call.

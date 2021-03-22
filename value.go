@@ -60,6 +60,20 @@ func (v Values) MapStringValue() map[string]Value {
 	return val
 }
 
+func (v Values) ValueScoreSlice() ValueScoreSlice {
+	val := make(ValueScoreSlice, 0, len(v)/2)
+	size := len(v)
+	for i := 0; i+1 < size; i += 2 {
+		val = append(val, ValueScore{
+			Value: v[i],
+			Score: v[i+1],
+		})
+	}
+	return val
+}
+
+///////////
+
 // Value return val
 type Value []byte
 
@@ -160,3 +174,10 @@ func (v Value) IsEmpty() bool {
 func (v Value) Equal(y Value) bool {
 	return bytes.Equal([]byte(v), []byte(y))
 }
+
+////
+type ValueScore struct {
+	Value Value
+	Score Value
+}
+type ValueScoreSlice = []ValueScore
