@@ -33,7 +33,14 @@ func (c *Client) DoProcessing(args ...interface{}) (Values, error) {
 		return nil, err
 	}
 	v, err := c.Do(val)
-	return ResultProcessing(v, err)
+	v, err = ResultProcessing(v, err)
+	if err != nil {
+		if err == ErrNotFound && c.ignoreNotFoundError {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return v, nil
 }
 
 // Do send and recv
@@ -62,6 +69,9 @@ func (c *Client) doInfo(args ...interface{}) (map[string]Value, error) {
 	if err != nil {
 		return nil, err
 	}
+	if len(v) == 0 {
+		return map[string]Value{}, nil
+	}
 	return v[1:].MapStringValue(), nil
 }
 
@@ -81,12 +91,20 @@ func (c *Client) doMapStringValue(args ...interface{}) (map[string]Value, error)
 	return v.MapStringValue(), nil
 }
 
+func (c *Client) doPairs(args ...interface{}) (Pairs, error) {
+	v, err := c.DoProcessing(args...)
+	if err != nil {
+		return nil, err
+	}
+	return v.Pairs(), nil
+}
+
 func (c *Client) doDuration(args ...interface{}) (time.Duration, error) {
 	v, err := c.DoProcessing(args...)
 	if err != nil {
 		return 0, err
 	}
-	return v[0].Duration(), nil
+	return v.First().Duration(), nil
 }
 
 func (c *Client) doInt(args ...interface{}) (int64, error) {
@@ -94,7 +112,7 @@ func (c *Client) doInt(args ...interface{}) (int64, error) {
 	if err != nil {
 		return 0, err
 	}
-	return v[0].Int(), nil
+	return v.First().Int(), nil
 }
 
 func (c *Client) doBool(args ...interface{}) (bool, error) {
@@ -102,7 +120,7 @@ func (c *Client) doBool(args ...interface{}) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	return v[0].Equal(one), nil
+	return v.First().Bool(), nil
 }
 
 func (c *Client) doString(args ...interface{}) (string, error) {
@@ -110,8 +128,7 @@ func (c *Client) doString(args ...interface{}) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
-	return v[0].String(), nil
+	return v.First().String(), nil
 }
 
 func (c *Client) doStrings(args ...interface{}) ([]string, error) {
@@ -127,7 +144,7 @@ func (c *Client) doValue(args ...interface{}) (Value, error) {
 	if err != nil {
 		return nil, err
 	}
-	return v[0], nil
+	return v.First(), nil
 }
 
 func (c *Client) doValues(args ...interface{}) (Values, error) {

@@ -23,16 +23,27 @@ func NewValues(arg []interface{}) (Values, error) {
 	return vs, nil
 }
 
+// String return first value
+func (v Values) First() Value {
+	if len(v) == 0 {
+		return nil
+	}
+	return v[0]
+}
+
 // String return string
 func (v Values) String() string {
-	if v == nil {
-		return "nil"
+	if len(v) == 0 {
+		return ""
 	}
 	return strings.Join(v.Strings(), "\n")
 }
 
 // Strings get []string
 func (v Values) Strings() []string {
+	if len(v) == 0 {
+		return nil
+	}
 	s := make([]string, 0, len(v))
 	for _, v := range v {
 		s = append(s, v.String())
@@ -42,6 +53,9 @@ func (v Values) Strings() []string {
 
 // MapStringInt get map[string]int64
 func (v Values) MapStringInt() map[string]int64 {
+	if len(v) == 0 {
+		return nil
+	}
 	val := map[string]int64{}
 	size := len(v)
 	for i := 0; i+1 < size; i += 2 {
@@ -52,10 +66,29 @@ func (v Values) MapStringInt() map[string]int64 {
 
 // MapStringValue get map[string]Value
 func (v Values) MapStringValue() map[string]Value {
+	if len(v) == 0 {
+		return nil
+	}
 	val := map[string]Value{}
 	size := len(v)
 	for i := 0; i+1 < size; i += 2 {
 		val[v[i].String()] = v[i+1]
+	}
+	return val
+}
+
+// Pairs get original key-value pairs
+func (v Values) Pairs() Pairs {
+	if len(v) == 0 {
+		return nil
+	}
+	val := make(Pairs, 0, len(v)/2)
+	size := len(v)
+	for i := 0; i+1 < size; i += 2 {
+		val = append(val, Pair{
+			Key:   v[i],
+			Value: v[i+1],
+		})
 	}
 	return val
 }
@@ -114,6 +147,9 @@ func NewValue(arg interface{}) (Value, error) {
 
 // String
 func (v Value) String() string {
+	if len(v) == 0 {
+		return ""
+	}
 	return string(v)
 }
 
@@ -160,3 +196,12 @@ func (v Value) IsEmpty() bool {
 func (v Value) Equal(y Value) bool {
 	return bytes.Equal([]byte(v), []byte(y))
 }
+
+// Pair the original key-value pair
+type Pair struct {
+	Key   Value
+	Value Value
+}
+
+// Pairs is the list of pair
+type Pairs []Pair

@@ -67,9 +67,22 @@ func (c *Client) ZScan(name string, keyStart string, scoreStart, scoreEnd int64,
 	return c.doMapStringInt("zscan", name, keyStart, scoreStart, scoreEnd, limit)
 }
 
+// ZScanPairs (ZScan) List key-score pairs where key-score in range (keyStart+scoreStart, scoreEnd].
+// Refer to scan command for more information about how it work.
+// This command was keep elements sort to ZScan
+func (c *Client) ZScanPairs(name string, keyStart string, scoreStart, scoreEnd int64, limit int64) (Pairs, error) {
+	return c.doPairs("zscan", name, keyStart, scoreStart, scoreEnd, limit)
+}
+
 // ZRScan List key-score pairs of a zset, in reverse order.
 func (c *Client) ZRScan(name string, keyStart string, scoreStart, scoreEnd int64, limit int64) (map[string]int64, error) {
 	return c.doMapStringInt("zrscan", name, keyStart, scoreStart, scoreEnd, limit)
+}
+
+// ZRScanPairs (ZRScan) List key-score pairs of a zset, in reverse order.
+// This command was keep elements sort to ZRScan
+func (c *Client) ZRScanPairs(name string, keyStart string, scoreStart, scoreEnd int64, limit int64) (Pairs, error) {
+	return c.doPairs("zrscan", name, keyStart, scoreStart, scoreEnd, limit)
 }
 
 // ZRank Returns the rank(index) of a given key in the specified sorted set.
@@ -87,9 +100,21 @@ func (c *Client) ZRange(name string, offset, limit int64) (map[string]int64, err
 	return c.doMapStringInt("zrange", name, offset, limit)
 }
 
+// ZRangePairs (ZRange) Returns a range of key-score pairs by index range [offset, offset + limit).
+// This command was keep elements sort to ZRange
+func (c *Client) ZRangePairs(name string, offset, limit int64) (Pairs, error) {
+	return c.doPairs("zrange", name, offset, limit)
+}
+
 // ZRRange Returns a range of key-score pairs by index range [offset, offset + limit), in reverse order.
 func (c *Client) ZRRange(name string, offset, limit int64) (map[string]int64, error) {
 	return c.doMapStringInt("zrrange", name, offset, limit)
+}
+
+// ZRRangePairs (ZRRange) Returns a range of key-score pairs by index range [offset, offset + limit), in reverse order.
+// This command was keep elements sort to ZRRange
+func (c *Client) ZRRangePairs(name string, offset, limit int64) (Pairs, error) {
+	return c.doPairs("zrrange", name, offset, limit)
 }
 
 // ZClear Delete all keys in a zset.
@@ -127,9 +152,21 @@ func (c *Client) ZPopFront(name string, limit int64) (map[string]int64, error) {
 	return c.doMapStringInt("zpop_front", name, limit)
 }
 
+// ZPopFrontPairs (ZPopFront) Since 1.9.0, Delete and return limit element(s) from front of the zset.
+// This command was keep elements sort to ZPopFront
+func (c *Client) ZPopFrontPairs(name string, limit int64) (Pairs, error) {
+	return c.doPairs("zpop_front", name, limit)
+}
+
 // ZPopBack Since 1.9.0, Delete and return limit element(s) from back of the zset.
 func (c *Client) ZPopBack(name string, limit int64) (map[string]int64, error) {
 	return c.doMapStringInt("zpop_back", name, limit)
+}
+
+// ZPopBackPairs (ZPopBack) Since 1.9.0, Delete and return limit element(s) from back of the zset.
+// This command was keep elements sort to ZPopBack
+func (c *Client) ZPopBackPairs(name string, limit int64) (Pairs, error) {
+	return c.doPairs("zpop_back", name, limit)
 }
 
 // MultiZSet Set multiple key-score pairs(kvs) of a zset in one method call.

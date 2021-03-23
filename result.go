@@ -20,6 +20,9 @@ func ResultProcessing(resp Values, err error) (Values, error) {
 	}
 
 	if resp[0].Equal(ok) {
+		if len(resp) < 2 {
+			return nil, nil
+		}
 		return resp[1:], nil
 	}
 
@@ -28,7 +31,7 @@ func ResultProcessing(resp Values, err error) (Values, error) {
 	}
 
 	if resp[0].Equal(clientError) {
-		return nil, fmt.Errorf("error: client error: %v", resp[1:].String())
+		return nil, fmt.Errorf("error: client error: %v", resp.String())
 	}
 
 	return nil, fmt.Errorf("error: parameter: %v", resp[0])

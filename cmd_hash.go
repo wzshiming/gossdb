@@ -70,11 +70,23 @@ func (c *Client) HGetAll(name string) (map[string]Value, error) {
 	return c.doMapStringValue("hgetall", name)
 }
 
+// HGetAllPairs Returns the whole hash, as an array of strings indexed by strings.
+func (c *Client) HGetAllPairs(name string) (Pairs, error) {
+	return c.doPairs("hgetall", name)
+}
+
 // HScan List key-value pairs of a hashmap with keys in range (keyStart, keyEnd].
 // ("", ""] means no range limit.
 // Refer to scan command for more information about how it work.
 func (c *Client) HScan(name string, keyStart, keyEnd string, limit int64) (map[string]Value, error) {
 	return c.doMapStringValue("hscan", name, keyStart, keyEnd, limit)
+}
+
+// HScanPairs List key-value pairs of a hashmap with keys in range (keyStart, keyEnd].
+// ("", ""] means no range limit.
+// Refer to scan command for more information about how it work.
+func (c *Client) HScanPairs(name string, keyStart, keyEnd string, limit int64) (Pairs, error) {
+	return c.doPairs("hscan", name, keyStart, keyEnd, limit)
 }
 
 // HScanRangeAll Like hscan, The whole range
@@ -85,6 +97,11 @@ func (c *Client) HScanRangeAll(name string, keyStart, keyEnd string, limit int64
 // HRScan Like hscan, but in reverse order.
 func (c *Client) HRScan(name string, keyStart, keyEnd string, limit int64) (map[string]Value, error) {
 	return c.doMapStringValue("hrscan", name, keyStart, keyEnd, limit)
+}
+
+// HRScanPairs Like hscan, but in reverse order.
+func (c *Client) HRScanPairs(name string, keyStart, keyEnd string, limit int64) (Pairs, error) {
+	return c.doPairs("hrscan", name, keyStart, keyEnd, limit)
 }
 
 // HRScanRangeAll Like hrscan, The whole range
@@ -108,10 +125,21 @@ func (c *Client) MultiHSet(name string, kvs map[string]Value) error {
 	return c.doNil(args...)
 }
 
+// MultiHSetPairs Set multiple key-value pairs(kvs) of a hashmap in one method call.
+func (c *Client) MultiHSetPairs(name string, kvs Pairs) error {
+
+	args := []interface{}{"multi_hset", name}
+	for _, kv := range kvs {
+		args = append(args, kv.Key)
+		args = append(args, kv.Value)
+	}
+	return c.doNil(args...)
+}
+
 // MultiHGet Get the values related to the specified multiple keys of a hashmap.
 func (c *Client) MultiHGet(name string, key ...string) (map[string]Value, error) {
 	if len(key) == 0 {
-		return make(map[string]Value), nil
+		return map[string]Value{}, nil
 	}
 
 	args := []interface{}{"multi_hget", name}
@@ -121,6 +149,21 @@ func (c *Client) MultiHGet(name string, key ...string) (map[string]Value, error)
 	}
 
 	return c.doMapStringValue(args...)
+}
+
+// MultiHGetPairs Get the values related to the specified multiple keys of a hashmap.
+func (c *Client) MultiHGetPairs(name string, key ...string) (Pairs, error) {
+	if len(key) == 0 {
+		return Pairs{}, nil
+	}
+
+	args := []interface{}{"multi_hget", name}
+
+	for _, v := range key {
+		args = append(args, v)
+	}
+
+	return c.doPairs(args...)
 }
 
 // MultiHDel Delete specified multiple keys in a hashmap.

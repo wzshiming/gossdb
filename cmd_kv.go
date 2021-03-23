@@ -116,6 +116,13 @@ func (c *Client) Scan(keyStart, keyEnd string, limit int64) (map[string]Value, e
 	return c.doMapStringValue("scan", keyStart, keyEnd, limit)
 }
 
+// ScanPairs List key-value pairs with keys in range (keyStart, keyEnd].
+// ("", ""] means no range limit.
+// This command can do wildchar * like search, but only prefix search, and the * char must never occur in keyStart and keyEnd!
+func (c *Client) ScanPairs(keyStart, keyEnd string, limit int64) (Pairs, error) {
+	return c.doPairs("scan", keyStart, keyEnd, limit)
+}
+
 // ScanRangeAll Like scan, The whole range
 func (c *Client) ScanRangeAll(keyStart, keyEnd string, limit int64, cb func(string, Value) error) error {
 	return c.doCDStringValue(cb, 1, limit, "scan", keyStart, keyEnd, limit)
@@ -124,6 +131,11 @@ func (c *Client) ScanRangeAll(keyStart, keyEnd string, limit int64, cb func(stri
 // RScan Like scan, but in reverse order.
 func (c *Client) RScan(keyStart, keyEnd string, limit int64) (map[string]Value, error) {
 	return c.doMapStringValue("rscan", keyStart, keyEnd, limit)
+}
+
+// RScan Like scan, but in reverse order.
+func (c *Client) RScanPairs(keyStart, keyEnd string, limit int64) (Pairs, error) {
+	return c.doPairs("rscan", keyStart, keyEnd, limit)
 }
 
 // RScanRangeAll Like rscan, The whole range
@@ -151,6 +163,18 @@ func (c *Client) MultiGet(key ...string) (map[string]Value, error) {
 		data = append(data, k)
 	}
 	return c.doMapStringValue(data...)
+}
+
+// MultiGetPairs Get the values related to the specified multiple keys
+func (c *Client) MultiGetPairs(key ...string) (Pairs, error) {
+	if len(key) == 0 {
+		return Pairs{}, nil
+	}
+	data := []interface{}{"multi_get"}
+	for _, k := range key {
+		data = append(data, k)
+	}
+	return c.doPairs(data...)
 }
 
 // MultiDel Delete specified multiple keys.

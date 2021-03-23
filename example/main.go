@@ -10,6 +10,7 @@ func main() {
 	db, err := ssdb.Connect(
 		ssdb.Addr("127.0.0.1:8888"),
 		ssdb.Auth("password"),
+		ssdb.IgnoreNotFoundError(true),
 		// or ssdb.URL("ssdb://127.0.0.1:8888?Auth=password"),
 	)
 	if err != nil {

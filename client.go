@@ -16,11 +16,12 @@ var (
 
 // Client connected client
 type Client struct {
-	pool             sync.Pool
-	dialHandler      func(addr string) (net.Conn, error)
-	auth             string
-	addr             string
-	readWriteTimeout time.Duration
+	pool                sync.Pool
+	dialHandler         func(addr string) (net.Conn, error)
+	auth                string
+	addr                string
+	readWriteTimeout    time.Duration
+	ignoreNotFoundError bool
 }
 
 // Connect connected client
