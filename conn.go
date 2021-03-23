@@ -30,9 +30,9 @@ var zeroTime = time.Time{}
 // Send send data
 func (c *Conn) Send(args Values) error {
 	if c.readWriteTimeout != 0 {
-		if err := c.conn.SetWriteDeadline(time.Now().Add(c.readWriteTimeout)); err == nil {
+		if err := c.conn.SetDeadline(time.Now().Add(c.readWriteTimeout)); err == nil {
 			defer func() {
-				_ = c.conn.SetWriteDeadline(zeroTime)
+				_ = c.conn.SetDeadline(zeroTime)
 			}()
 		}
 	}
@@ -50,9 +50,9 @@ func (c *Conn) Send(args Values) error {
 // Recv receive	data
 func (c *Conn) Recv() (Values, error) {
 	if c.readWriteTimeout != 0 {
-		if err := c.conn.SetWriteDeadline(time.Now().Add(c.readWriteTimeout)); err == nil {
+		if err := c.conn.SetDeadline(time.Now().Add(c.readWriteTimeout)); err == nil {
 			defer func() {
-				_ = c.conn.SetWriteDeadline(zeroTime)
+				_ = c.conn.SetDeadline(zeroTime)
 			}()
 		}
 	}
